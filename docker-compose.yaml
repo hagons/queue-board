@@ -6,19 +6,34 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - 3000:3000
+      - 3002:3002
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
 
   frontend:
     build:
-      context: ./backend
+      context: ./frontend
       dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
   bff:
     build:
-      context: ./backend
+      context: ./bff
       dockerfile: Dockerfile
+    ports:
+      - 3001:3001
+    volumes:
+      - ./bff:/app
+      - /app/node_modules
+
   redis:
     image: redis
   rabbitmq:
-    image: rqbbitmq
+    image: rabbitmq
   mariadb:
     image: mariadb
