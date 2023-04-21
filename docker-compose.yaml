@@ -2,6 +2,7 @@ version: '3.9'
 
 services:
   backend:
+    restart: always
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -12,6 +13,7 @@ services:
       - /app/node_modules
 
   frontend:
+    restart: always
     build:
       context: ./frontend
       dockerfile: Dockerfile
@@ -22,6 +24,7 @@ services:
       - /app/node_modules
 
   bff:
+    restart: always
     build:
       context: ./bff
       dockerfile: Dockerfile
@@ -32,8 +35,28 @@ services:
       - /app/node_modules
 
   redis:
-    image: redis
+    image: bitnami/redis
+    ports:
+      - '6379:6379'
+    restart: always
+    environment:
+      - REDIS_PASS=redis
+    command: |
+      bash -euxc "redis-server --requirepass $$REDIS_PASS"
   rabbitmq:
-    image: rabbitmq
+    image: bitnami/rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    restart: always
+    environment:
+      # 로컬 큐 서버는 환경변수 관리 안함
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=password
   mariadb:
-    image: mariadb
+    image: bitnami/mariadb
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MARIADB_ROOT_PASSWORD: example
